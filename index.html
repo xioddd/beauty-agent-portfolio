@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人作品：美妆内容全链路智能运营 Agent</title>
+<style>
+  :root{
+    --bg:#F8F4EC;
+    --ink:#101010;
+    --gold:#B9975B;
+    --gold-soft:rgba(185,151,91,.32);
+    --gold-faint:rgba(185,151,91,.12);
+    --text:#1B1712;
+    --muted:#7B7164;
+    --card:#FFFFFF;
+    --serif:"Didot","Bodoni MT","Noto Serif SC",Georgia,"Songti SC","STSong",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 32px;}
+
+  nav{position:sticky;top:0;z-index:50;background:rgba(248,244,236,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--gold-soft);}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;}
+  nav .brand{font-family:var(--serif);font-size:15px;letter-spacing:.06em;color:var(--ink);}
+  nav .links{display:flex;gap:22px;}
+  nav .links a{color:var(--muted);text-decoration:none;font-size:13px;letter-spacing:.05em;transition:color .25s;}
+  nav .links a:hover,nav .links a:focus{color:var(--gold);}
+
+  header.hero{padding:92px 0 68px;text-align:center;}
+  .kicker{display:inline-block;font-size:12px;letter-spacing:.42em;color:var(--gold);text-transform:uppercase;margin-bottom:26px;padding-left:.42em;}
+  h1{font-family:var(--serif);font-weight:400;font-size:clamp(32px,5vw,54px);line-height:1.22;color:var(--ink);letter-spacing:.02em;margin-bottom:20px;}
+  .hero .sub{font-size:clamp(15px,2vw,18px);color:var(--muted);max-width:680px;margin:0 auto 34px;}
+  .chain{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:0 auto 30px;max-width:760px;}
+  .chain span{font-size:12.5px;color:var(--ink);background:var(--card);border:1px solid var(--gold-soft);border-radius:999px;padding:5px 14px;}
+  .chain i{color:var(--gold);font-style:normal;align-self:center;}
+  .hero .meta{display:flex;justify-content:center;flex-wrap:wrap;gap:14px 34px;font-size:13px;color:var(--muted);letter-spacing:.05em;}
+  .hero .meta b{color:var(--text);font-weight:600;}
+  .gold-rule{width:64px;height:1px;background:var(--gold);margin:40px auto 0;border:0;}
+
+  section{padding:60px 0;}
+  section + section{border-top:1px solid var(--gold-soft);}
+  .sec-head{margin-bottom:38px;}
+  .sec-no{font-family:var(--serif);font-size:14px;color:var(--gold);letter-spacing:.3em;display:block;margin-bottom:12px;}
+  h2{font-family:var(--serif);font-weight:400;font-size:clamp(24px,3.2vw,34px);color:var(--ink);letter-spacing:.02em;}
+  .sec-desc{color:var(--muted);font-size:15px;margin-top:10px;max-width:760px;}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .card{background:var(--card);border:1px solid var(--gold-soft);border-radius:6px;padding:28px 30px;}
+  .card h3{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+  .card h3::before{content:"";width:8px;height:8px;background:var(--gold);border-radius:50%;flex:none;}
+  .card p,.card li{font-size:14.5px;color:var(--text);}
+  .card ul{padding-left:18px;}
+  .card li{margin-bottom:7px;}
+  .card li::marker{color:var(--gold);}
+  .card .tag{display:inline-block;font-size:11.5px;letter-spacing:.08em;color:var(--gold);border:1px solid var(--gold-soft);border-radius:999px;padding:2px 10px;margin-bottom:10px;}
+
+  /* 流程图 */
+  .flow{display:flex;flex-direction:column;align-items:center;max-width:600px;margin:0 auto;}
+  .flow-node{background:var(--card);border:1px solid var(--gold);border-radius:6px;padding:13px 26px;width:100%;text-align:center;}
+  .flow-node .fn-title{font-size:15px;font-weight:600;color:var(--ink);letter-spacing:.03em;}
+  .flow-node .fn-desc{font-size:12.5px;color:var(--muted);margin-top:2px;}
+  .flow-node.gate{border-style:dashed;}
+  .flow-node.branch{background:var(--gold-faint);}
+  .flow-node.start,.flow-node.end{background:var(--ink);border-color:var(--ink);width:auto;min-width:220px;}
+  .flow-node.start .fn-title,.flow-node.end .fn-title{color:#F8F4EC;}
+  .flow-node.end .fn-desc{color:rgba(248,244,236,.6);}
+  .flow-arrow{width:1px;height:26px;background:var(--gold);position:relative;}
+  .flow-arrow::after{content:"";position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--gold);}
+  .flow-branch{display:grid;grid-template-columns:1fr 1fr;gap:18px;width:100%;}
+  .flow-branch .flow-node{width:100%;}
+  .flow-branch .fb-label{font-size:12px;color:var(--gold);letter-spacing:.1em;text-align:center;margin-bottom:6px;}
+  .flow-loop{font-size:12.5px;color:var(--muted);text-align:center;margin-top:22px;border:1px dashed var(--gold-soft);border-radius:6px;padding:10px 16px;background:var(--card);}
+
+  /* 案例 */
+  .cases{display:flex;flex-direction:column;gap:22px;}
+  .case{background:var(--card);border:1px solid var(--gold-soft);border-radius:6px;padding:26px 30px;display:grid;grid-template-columns:110px 1fr;gap:6px 26px;}
+  .case .c-tag{font-family:var(--serif);color:var(--gold);font-size:14px;letter-spacing:.1em;padding-top:3px;}
+  .case h3{font-size:16.5px;color:var(--ink);margin-bottom:9px;font-weight:600;}
+  .case .c-input{background:var(--gold-faint);border-left:3px solid var(--gold);padding:9px 15px;font-size:13.5px;border-radius:0 4px 4px 0;margin-bottom:12px;}
+  .case .c-input b{color:var(--gold);}
+  .case ul{padding-left:18px;}
+  .case li{font-size:14px;margin-bottom:5px;}
+  .case li::marker{color:var(--gold);}
+  .case .c-verdict{margin-top:12px;display:inline-block;font-size:13px;font-weight:600;color:var(--ink);background:var(--gold-faint);border:1px solid var(--gold-soft);border-radius:999px;padding:5px 16px;}
+  .case .c-verdict.warn{color:#8a5a1a;}
+
+  /* 截图位 */
+  .shots{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:36px;}
+  figure.shot{margin:0;}
+  .shot-box{border:1.5px dashed var(--gold);border-radius:6px;background:var(--gold-faint);aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;color:var(--muted);text-align:center;padding:16px;}
+  .shot-box svg{width:32px;height:32px;stroke:var(--gold);fill:none;stroke-width:1.4;}
+  .shot-box .s-title{font-size:13.5px;font-weight:600;color:var(--text);}
+  .shot-box .s-tip{font-size:12px;line-height:1.6;}
+  figcaption{font-size:12.5px;color:var(--muted);text-align:center;margin-top:9px;line-height:1.6;}
+
+  /* 表格 */
+  .tbl-scroll{overflow-x:auto;border:1px solid var(--gold-soft);border-radius:6px;background:var(--card);}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:560px;}
+  th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--gold-faint);}
+  th{background:var(--gold-faint);color:var(--ink);font-weight:600;white-space:nowrap;}
+  td{color:var(--text);}
+  tr:last-child td{border-bottom:none;}
+  .note-line{font-size:12.5px;color:var(--muted);margin-top:12px;}
+
+  /* 体验 */
+  .demo-box{border:1px solid var(--gold-soft);border-radius:6px;background:var(--card);overflow:hidden;}
+  .demo-pending{aspect-ratio:16/8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;background:var(--gold-faint);padding:24px;}
+  .demo-pending .dp-title{font-size:15px;font-weight:600;color:var(--ink);}
+  .demo-pending .dp-tip{font-size:13px;color:var(--muted);line-height:1.8;}
+  .demo-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:16px 24px;border-top:1px solid var(--gold-soft);}
+  .btn-dark{display:inline-block;background:var(--ink);color:#F8F4EC;text-decoration:none;font-size:14px;letter-spacing:.06em;padding:11px 26px;border-radius:4px;transition:background .25s;}
+  .btn-dark:hover,.btn-dark:focus{background:var(--gold);}
+  .demo-note{font-size:12.5px;color:var(--muted);}
+
+  .value-quote{background:var(--ink);color:#EFE8DA;border-radius:6px;padding:42px 46px;position:relative;}
+  .value-quote::before{content:"“";font-family:var(--serif);font-size:90px;color:var(--gold);position:absolute;top:6px;left:26px;line-height:1;opacity:.8;}
+  .value-quote p{font-family:var(--serif);font-size:clamp(15.5px,2.1vw,19px);line-height:1.9;position:relative;padding-left:34px;}
+
+  .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .metric{background:var(--card);border:1px solid var(--gold-soft);border-radius:6px;padding:24px 20px;}
+  .metric .m-name{font-size:14.5px;font-weight:600;color:var(--ink);margin-bottom:7px;}
+  .metric .m-desc{font-size:12.5px;color:var(--muted);line-height:1.7;}
+
+  .roadmap{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:26px;}
+  .r-item{background:var(--card);border:1px solid var(--gold-soft);border-radius:6px;padding:24px;}
+  .r-no{font-family:var(--serif);font-size:13px;color:var(--gold);letter-spacing:.2em;}
+  .r-item h3{font-size:15px;color:var(--ink);margin:8px 0;font-weight:600;}
+  .r-item p{font-size:13px;color:var(--muted);line-height:1.7;}
+
+  footer{border-top:1px solid var(--gold-soft);padding:34px 0 46px;text-align:center;font-size:12.5px;color:var(--muted);letter-spacing:.06em;}
+  footer .f-name{font-family:var(--serif);font-size:14px;color:var(--ink);margin-bottom:6px;}
+
+  a:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:2px;}
+
+  /* 实机画廊 */
+  .gallery{margin-top:40px;display:flex;flex-direction:column;gap:30px;}
+  .gal-group h4{font-family:var(--serif);font-size:15.5px;font-weight:600;color:var(--ink);margin-bottom:6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .gal-group h4::before{content:"";width:8px;height:8px;background:var(--gold);border-radius:50%;flex:none;}
+  .gal-group .g-desc{font-size:13px;color:var(--muted);margin:0 0 14px 18px;}
+  .gal-grid{display:grid;gap:14px;}
+  .gal-grid.c1{grid-template-columns:1fr;max-width:860px;}
+  .gal-grid.c2{grid-template-columns:repeat(2,1fr);}
+  .gal-grid.c3{grid-template-columns:repeat(3,1fr);}
+  .gal-item{position:relative;background:var(--card);border:1px solid var(--gold-soft);border-radius:6px;overflow:hidden;cursor:zoom-in;transition:box-shadow .25s,border-color .25s;}
+  .gal-item:hover{border-color:var(--gold);box-shadow:0 6px 22px rgba(185,151,91,.18);}
+  .gal-item img{display:block;width:100%;height:auto;}
+  .gal-item .g-cap{font-size:12px;color:var(--muted);padding:8px 12px;border-top:1px solid var(--gold-faint);line-height:1.5;}
+  .gal-item .g-zoom{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;background:rgba(16,16,16,.62);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .25s;}
+  .gal-item:hover .g-zoom,.gal-item:focus-visible .g-zoom{opacity:1;}
+  .gal-item .g-zoom svg{width:13px;height:13px;stroke:#F8F4EC;fill:none;stroke-width:1.8;}
+
+  /* 灯箱 */
+  .lightbox{position:fixed;inset:0;z-index:100;background:rgba(16,14,10,.88);display:none;align-items:center;justify-content:center;padding:40px;cursor:zoom-out;}
+  .lightbox.open{display:flex;}
+  .lightbox img{max-width:100%;max-height:100%;border-radius:4px;box-shadow:0 18px 60px rgba(0,0,0,.5);}
+  .lightbox .lb-close{position:absolute;top:20px;right:26px;color:#F8F4EC;font-size:30px;line-height:1;background:none;border:0;cursor:pointer;opacity:.8;}
+  .lightbox .lb-close:hover{opacity:1;}
+
+  /* 在线体验实机卡 */
+  .demo-live{background:var(--gold-faint);padding:34px 30px;text-align:center;}
+  .demo-live .dl-badge{display:inline-block;font-size:11.5px;letter-spacing:.18em;color:var(--gold);border:1px solid var(--gold-soft);border-radius:999px;padding:3px 14px;margin-bottom:16px;}
+  .demo-live .dl-title{font-family:var(--serif);font-size:19px;color:var(--ink);margin-bottom:8px;}
+  .demo-live .dl-tip{font-size:13.5px;color:var(--muted);max-width:620px;margin:0 auto 22px;line-height:1.8;}
+  .store-meta{font-size:12px;color:var(--muted);margin-top:14px;word-break:break-all;}
+  .store-meta code{font-family:ui-monospace,Consolas,monospace;background:var(--card);border:1px solid var(--gold-soft);border-radius:3px;padding:1px 6px;font-size:11.5px;}
+
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{transition:none !important;animation:none !important;}}
+  @media (max-width:860px){
+    .grid-2,.grid-3{grid-template-columns:1fr;}
+    .shots,.gal-grid.c2,.gal-grid.c3{grid-template-columns:1fr;}
+    .metrics,.roadmap{grid-template-columns:1fr;}
+    .flow-branch{grid-template-columns:1fr;}
+    .case{grid-template-columns:1fr;gap:0;}
+    nav .links{display:none;}
+    .value-quote{padding:34px 26px;}
+    .value-quote p{padding-left:14px;}
+    .demo-pending{aspect-ratio:auto;min-height:200px;}
+    .lightbox{padding:16px;}
+  }
+  @media print{
+    nav,.lightbox,.gal-item .g-zoom{display:none !important;}
+    body{background:#fff;}
+    section{padding:34px 0;page-break-inside:avoid;}
+    .gal-item,.shot-box{break-inside:avoid;}
+    .shot-box{background:#fff;}a{color:var(--text);}
+  }
+
+  /* 量化评测闭环章节 */
+  .eval-method{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:30px 0 38px;}
+  .em-card{background:var(--card);border:1px solid var(--gold-soft);border-radius:6px;padding:24px 22px;}
+  .em-num{font-family:var(--serif);font-size:34px;color:var(--gold);line-height:1;margin-bottom:8px;}
+  .em-label{font-size:13px;letter-spacing:.12em;color:var(--ink);font-weight:600;margin-bottom:10px;}
+  .em-card p{font-size:13px;color:var(--muted);line-height:1.75;margin:0;}
+  .em-card b{color:var(--text);}
+  .sub-h{font-family:var(--serif);font-size:19px;color:var(--ink);margin:34px 0 12px;padding-left:12px;border-left:3px solid var(--gold);}
+  .body-p{font-size:14px;color:var(--text);line-height:1.9;margin:0 0 18px;}
+  .body-p b{color:var(--ink);}
+  .eval-table-wrap{overflow-x:auto;border:1px solid var(--gold-soft);border-radius:6px;margin:18px 0 8px;}
+  .eval-table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--card);min-width:640px;}
+  .eval-table th{background:#211D16;color:#E9DFC9;font-weight:600;letter-spacing:.05em;padding:13px 16px;text-align:left;font-size:12.5px;}
+  .eval-table td{padding:13px 16px;border-top:1px solid rgba(185,151,91,.18);color:var(--text);line-height:1.6;vertical-align:top;}
+  .eval-table tr.hl td{background:var(--gold-faint);}
+  .eval-table b{color:var(--ink);}
+  .rootchain{display:flex;align-items:stretch;gap:12px;margin:20px 0;}
+  .rc-item{flex:1;background:var(--card);border:1px solid var(--gold-soft);border-radius:6px;padding:18px 16px;}
+  .rc-item.rc-fix{border-color:var(--gold);background:var(--gold-faint);}
+  .rc-tag{display:inline-block;font-size:11px;letter-spacing:.14em;color:#fff;background:var(--gold);border-radius:3px;padding:3px 10px;margin-bottom:10px;}
+  .rc-item p{font-size:12.8px;color:var(--text);line-height:1.75;margin:0;}
+  .rc-arrow{display:flex;align-items:center;color:var(--gold);font-size:20px;}
+  .judge-note{background:#211D16;border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:18px 22px;margin:22px 0;}
+  .judge-note p{font-size:13.5px;color:#EDE6D6;line-height:1.85;margin:0;}
+  .judge-note b{color:#E9C98A;}
+  .eval-flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:22px;padding:20px;background:var(--gold-faint);border-radius:6px;}
+  .eval-flow span{font-size:12.5px;color:var(--ink);background:var(--card);border:1px solid var(--gold-soft);border-radius:20px;padding:7px 15px;white-space:nowrap;}
+  .eval-flow i{color:var(--gold);font-style:normal;font-size:14px;}
+  @media(max-width:760px){.eval-method{grid-template-columns:1fr;}.rootchain{flex-direction:column;}.rc-arrow{transform:rotate(90deg);justify-content:center;}}
+  @media print{.em-card,.rc-item,.eval-table tr,.judge-note{break-inside:avoid;}}
+
+
+/* 评测闭环证据截图（16:9 横屏） */
+.eval-evidence{margin:20px 0 6px;}
+.eval-evidence .gal-item{margin-bottom:18px;}
+.eval-evidence .g-cap{font-size:13px;padding:10px 14px;}
+@media (max-width:760px){.eval-evidence{margin:14px 0 4px;}.eval-evidence .g-cap{font-size:12px;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">美妆内容全链路智能运营助手</div>
+    <div class="links">
+      <a href="#background">项目背景</a>
+      <a href="#solution">工作流</a>
+      <a href="#knowledge">知识库</a>
+      <a href="#tests">测试评估</a>
+      <a href="#eval-loop">评测迭代</a>
+      <a href="#demo">在线体验</a>
+      <a href="#metrics">指标与落地</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="kicker">Portfolio · 个人作品</span>
+    <h1>美妆内容全链路智能运营 Agent</h1>
+    <p class="sub">面向品牌内容运营人员，输入产品资料、目标用户、发布平台和内容目标，完成资料核验、用户洞察、内容生成、合规风控、质量评分与反馈迭代</p>
+    <div style="margin-bottom:24px;">
+      <span style="display:inline-block;font-size:12.5px;letter-spacing:.12em;color:#3d6b35;border:1px solid rgba(61,107,53,.4);background:rgba(61,107,53,.07);border-radius:999px;padding:5px 18px;">● 已发布上线至扣子商店，可公开访问对话 · 当前版本 v2.3.1（模型豆包 2.0 pro · 知识库 RAG ×3）</span>
+    </div>
+    <div class="chain">
+      <span>资料核验</span><i>→</i><span>用户洞察</span><i>→</i><span>策略分支</span><i>→</i><span>内容生成</span><i>→</i><span>合规风控</span><i>→</i><span>质量评分</span><i>→</i><span>反馈迭代</span>
+    </div>
+    <div class="meta">
+      <span>作品类型：<b>AI Agent 应用 Demo</b></span>
+      <span>搭建平台：<b>Coze（提示词 + 知识库 RAG）</b></span>
+      <span>面向岗位：<b>美妆品牌 AI 内容运营</b></span>
+    </div>
+    <hr class="gold-rule">
+  </div>
+</header>
+
+<main>
+
+<section id="background">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-no">01 / 背景</span>
+      <h2>业务问题与目标用户</h2>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>业务问题</h3>
+        <ul>
+          <li><b>资料分散且无核验</b>：成分、功效、适用人群信息散落各处，资料不全时内容生产仍在"硬写"，埋合规隐患；</li>
+          <li><b>初稿效率低、质量不稳</b>：选题与文案依赖个人经验，新人上手慢；</li>
+          <li><b>合规红线高发</b>：美妆功效宣称受严格监管（如"抗老"非备案功效、医疗化表达禁用），靠人工事后审核成本高；</li>
+          <li><b>种草与转化混为一谈</b>：同一产品在不同业务目标、不同平台需要差异化表达，缺少标准化路径；</li>
+          <li><b>生成结果无质控、无沉淀</b>：一次性生成工具无法评估内容质量，也无法根据运营反馈持续改进。</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>目标用户与场景</h3>
+        <ul>
+          <li><b>品牌内容运营</b>：快速产出选题、标题、初稿，区分种草/转化目标；</li>
+          <li><b>内容审核 / 合规岗</b>：发布前识别功效表述风险并获得合规改写；</li>
+          <li><b>新媒体新人 / 外包写手</b>：按标准化结构与平台规范产出内容；</li>
+          <li>核心场景：输入产品资料 + 目标用户 + 平台 + 内容目标，Agent 先核验资料、再走对应业务路径，输出可评估、可迭代的内容方案。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="solution">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-no">02 / 工作流</span>
+      <h2>七步运营工作流</h2>
+      <p class="sec-desc">不是一次性文案生成器，而是带前置风控、业务分支、质控评分和反馈闭环的运营工作流。资料不全不硬写，风险表达直接给改写，每次输出可评分、可反馈、可迭代。</p>
+    </div>
+
+    <div class="flow">
+      <div class="flow-node start"><div class="fn-title">开始：产品资料 · 目标用户 · 平台 · 内容目标（种草/转化）</div></div>
+      <div class="flow-arrow"></div>
+      <div class="flow-node gate">
+        <div class="fn-title">① 资料核验门</div>
+        <div class="fn-desc">名称/卖点依据/人群/场景/可验证性 五项检查 · 不通过则退回补充，不生成正式文案</div>
+      </div>
+      <div class="flow-arrow"></div>
+      <div class="flow-node">
+        <div class="fn-title">② 卖点提取 + 知识库检索</div>
+        <div class="fn-desc">只引用官方/知识库资料，不编造成分、功效、价格、数据</div>
+      </div>
+      <div class="flow-arrow"></div>
+      <div class="flow-node">
+        <div class="fn-title">③ 用户洞察</div>
+        <div class="fn-desc">痛点 · 关注点 · 担心 · 决策因素 · 判断用户处于种草/比较/转化阶段</div>
+      </div>
+      <div class="flow-arrow"></div>
+      <div class="flow-node branch">
+        <div class="fn-title">④ 策略分支</div>
+        <div class="fn-desc">按内容目标选择路径，并说明选择原因</div>
+      </div>
+      <div class="flow-arrow"></div>
+      <div class="flow-branch">
+        <div>
+          <div class="fb-label">种草路径</div>
+          <div class="flow-node"><div class="fn-title">痛点 · 场景化选题 · 体验型内容</div><div class="fn-desc">建立兴趣与信任</div></div>
+        </div>
+        <div>
+          <div class="fb-label">转化路径</div>
+          <div class="flow-node"><div class="fn-title">卖点 · 购买理由 · 疑虑解答</div><div class="fn-desc">决策辅助信息，缩短下单路径</div></div>
+        </div>
+      </div>
+      <div class="flow-arrow"></div>
+      <div class="flow-node">
+        <div class="fn-title">⑤ 内容生成</div>
+        <div class="fn-desc">3 个选题 · 5 个标题开头 · 平台化初稿（小红书/抖音/天猫）</div>
+      </div>
+      <div class="flow-arrow"></div>
+      <div class="flow-node gate">
+        <div class="fn-title">⑥ 合规风控</div>
+        <div class="fn-desc">夸大/绝对化/医疗化/无依据功效逐条检查 → 直接给合规改写句；高风险标记"建议人工审核"</div>
+      </div>
+      <div class="flow-arrow"></div>
+      <div class="flow-node">
+        <div class="fn-title">⑦ 五维质量评分</div>
+        <div class="fn-desc">用户相关性 · 产品匹配度 · 可读性 · 转化价值 · 风险控制（模拟评估，非业务数据）</div>
+      </div>
+      <div class="flow-arrow"></div>
+      <div class="flow-node end">
+        <div class="fn-title">输出终稿 + 修改建议 + 反馈入口</div>
+        <div class="fn-desc">采用 / 需修改（模板化·卖点不具体·缺场景·风格不符·风险·痛点不准）→ 定向迭代下一版</div>
+      </div>
+    </div>
+    <div class="flow-loop">反馈闭环：运营人员对结果打分与标注问题 → Agent 输出修改版并说明「本版优化点」→ 高频问题反哺提示词与知识库迭代</div>
+  </div>
+</section>
+
+<section id="knowledge">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-no">03 / 知识库</span>
+      <h2>三类知识库分工（RAG 设计）</h2>
+      <p class="sec-desc">知识库不是"资料堆"，按检索意图拆成三类：产品事实、内容规范、平台规范分开维护，生成时各取所需，也便于后续按品牌/平台独立扩展。</p>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <span class="tag">RAG · 产品事实</span>
+        <h3>产品资料库</h3>
+        <ul>
+          <li>每款产品一张资料卡：官方卖点、成分、适用人群、场景、使用方法；</li>
+          <li>已录入珀莱雅 5 款大单品：红宝石面霜/精华、双抗精华、源力精华、能量面霜；</li>
+          <li>标注"官方不支持的表述"与资料来源、更新时间；</li>
+          <li>价格/促销不入库，引导查官方旗舰店，避免过时信息。</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="tag">RAG · 风控规则</span>
+        <h3>内容规范库</h3>
+        <ul>
+          <li>美妆用户 8 大常见关注点；</li>
+          <li>内容风险红线：禁医疗化、禁虚构数据、禁绝对化；</li>
+          <li><b>真实监管要点</b>："抗老/抗初老"非药监局备案功效（备案为抗皱、紧致），美白需特证；</li>
+          <li>检测数据引用规范（注明来源+保留条件）。</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="tag">RAG · 平台策略</span>
+        <h3>平台规范库</h3>
+        <ul>
+          <li>小红书：搜索功课逻辑、图文结构、评论互动；</li>
+          <li>抖音：前 3 秒钩子、口播节奏、短句、挂车转化；</li>
+          <li>天猫/淘宝：详情信息、购买理由、疑虑前置解答；</li>
+          <li>种草路径 vs 转化路径的内容差异。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tests">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-no">04 / 测试</span>
+      <h2>能力验证与效果评估方法</h2>
+      <p class="sec-desc">围绕正常链路、前置风控、违规拦截、反馈闭环和 RAG 行为设计测试集，覆盖 3 个平台、种草/转化 2 类目标、资料缺失与违规诉求 2 类异常输入；以下为线上实机测试结果（2026-09-14 发布版本 v2.2，模型豆包 2.0 pro），均为人工标注，不声称代表真实业务数据。</p>
+    </div>
+
+    <div class="cases">
+      <article class="case">
+        <div class="c-tag">T1 · 正常链路</div>
+        <div>
+          <h3>红宝石面霜 × 小红书 × 种草：完整十段输出，评分 92</h3>
+          <div class="c-input"><b>输入：</b>珀莱雅红宝石面霜 / 轻熟肌女性 / 小红书 / 种草（资料完整）</div>
+          <ul>
+            <li>核验门五项全部通过后调用产品资料库，初稿引用环肽-161、胜肽体系等官方成分信息；</li>
+            <li>全文功效词使用<b>"抗皱""紧致"</b>备案词，未出现"抗老"类违规承诺；</li>
+            <li>输出五维评分 92/100、优点/问题/优化建议与信息缺口。</li>
+          </ul>
+          <span class="c-verdict">✓ RAG 调用 · 种草路径 · 合规用词 · 评分输出</span>
+        </div>
+      </article>
+
+      <article class="case">
+        <div class="c-tag">T3 · 前置风控</div>
+        <div>
+          <h3>"为某款精华生成小红书种草文案"：资料不全，不硬写</h3>
+          <div class="c-input"><b>输入：</b>只给"某款精华"，无产品全称、卖点依据、人群与场景</div>
+          <ul>
+            <li>核验门五项全部标记缺失，提示直接生成会带来功效无依据、人群不匹配等风险；</li>
+            <li>不生成正式初稿，改为输出 3 个不涉确定性功效的选题框架 + 5 项补充资料清单；</li>
+            <li>体现"先核验、后生产"的业务风险意识。</li>
+          </ul>
+          <span class="c-verdict">✓ 核验门触发 · 缺失清单 · 异常输入处理</span>
+        </div>
+      </article>
+
+      <article class="case">
+        <div class="c-tag">T4 · 违规拦截</div>
+        <div>
+          <h3>"7天淡纹堪比医美，效果立竿见影"：定性拦截 + 合规替代稿</h3>
+          <div class="c-input"><b>输入：</b>为红宝石面霜 4.0 写抖音口播，要求使用"7 天淡纹堪比医美、立竿见影"</div>
+          <ul>
+            <li>核验门第⑤项不通过，逐条定性：违反备案功效规则（"淡纹""7 天见效"）、医美对比规则、无依据承诺规则；</li>
+            <li>不只拒绝：基于官方可验证信息另写一版合规抖音口播，功效词收敛为"抗皱、紧致"；</li>
+            <li>附带风险检查与反馈入口，形成"拦截 → 替代 → 可继续迭代"的闭环。</li>
+          </ul>
+          <span class="c-verdict warn">✓ 三句违规全部识别 · 合规替代稿 · 拒绝但不停摆</span>
+        </div>
+      </article>
+
+      <article class="case">
+        <div class="c-tag">B · 反馈闭环</div>
+        <div>
+          <h3>用户纠错修复幻觉：从替代稿到 96 分终稿</h3>
+          <div class="c-input"><b>反馈：</b>合规替代稿中"上新还有活动、链接放小黄车"无官方依据 → 要求删除、补环肽-161 专利号与"皮骨双修"含义、补真实场景</div>
+          <ul>
+            <li>Agent 输出「本版优化点」逐条响应，修改稿删除全部无依据活动/渠道表述，统一引导"活动以官方旗舰店页面为准"；</li>
+            <li>补入专利号 ZL202210368579.1、"皮骨双修"官方定义，并加入熬夜后厚涂、夜间护肤收尾两个真实场景；</li>
+            <li>复检零风险，五维评分 96/100，信息缺口明确写"未引用无依据的活动/效果数据"。</li>
+          </ul>
+          <span class="c-verdict">✓ 定向修改 · 幻觉修复 · 复检 · 分数提升</span>
+        </div>
+      </article>
+
+      <article class="case">
+        <div class="c-tag">RAG · 可观测性</div>
+        <div>
+          <h3>跨版本提问不"脑补"：4.0 质地问题的召回与边界声明</h3>
+          <div class="c-input"><b>输入：</b>"红宝石面霜 4.0 有几个版本？质地分别是什么？各适合什么肤质？请使用知识库并注明依据"</div>
+          <ul>
+            <li>运行轨迹可见：检索耗时 1.4s，按相关度返回 4 个召回切片（Score 1.00 / 0.98 / 0.79 / 0.63），标注库名与命中原文；</li>
+            <li>知识库仅收录 4.0 正式版、未收录其质地分类时，Agent 明确"以官方旗舰店实时页面为准"，不编造；</li>
+            <li>召回的 3.0 三质地信息仅作上一代产品脉络参考，主动声明"不可等同于 4.0 功效属性"——RAG 召回≠允许跨版本迁移结论。</li>
+          </ul>
+          <span class="c-verdict">✓ 召回可观测 · 不幻觉 · 版本边界自约束</span>
+        </div>
+      </article>
+    </div>
+
+    <h3 style="font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink);margin:34px 0 14px;">评估指标（10 组样例 · 人工标注）</h3>
+    <div class="tbl-scroll">
+      <table>
+        <caption style="text-align:left;font-size:13px;color:var(--muted);padding:10px 16px 0;">表：10组模拟样例的人工标注评估指标设计</caption><thead><tr><th>评估指标</th><th>计算方式</th><th>评估什么</th></tr></thead>
+        <tbody>
+          <tr><td>结构化输出成功率</td><td>按规定结构完整输出的样例数 / 10</td><td>流程稳定性</td></tr>
+          <tr><td>风险表达识别率</td><td>正确识别风险的样例数 / 含风险样例数</td><td>合规风控能力</td></tr>
+          <tr><td>信息缺失识别率</td><td>资料不全时正确触发核验门的样例数 / 缺失样例数</td><td>前置风控能力</td></tr>
+          <tr><td>种草/转化分支正确率</td><td>路径选择正确样例数 / 含明确目标样例数</td><td>业务链路理解</td></tr>
+          <tr><td>人工修改次数</td><td>初稿到可用平均人工干预轮次</td><td>内容可用度</td></tr>
+          <tr><td>单次处理耗时</td><td>发送到完整输出的时间</td><td>提效幅度（对比人工）</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note-line">注：以上为基于模拟样例的人工标注评估，用于验证流程与提示词效果，不代表真实业务转化数据；评估结果用于指导提示词与知识库的下一轮迭代。</p>
+
+    <h3 style="font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink);margin:40px 0 4px;">实机测试截图（点击图片可放大查看）</h3>
+    <p class="note-line" style="margin:0 0 6px;">截图均取自 2026-09-14 线上发布版本（扣子商店公开页 + 编排页预览调试面板），未做内容修改。</p>
+    <div class="gallery">
+
+      <div class="gal-group">
+        <h4>① 商店主页与编排配置</h4>
+        <p class="g-desc">公开发布的智能体主页（开场白 + 3 个预置问题）；编排页可见人设提示词、模型设置（豆包 2.0 pro，深度思考关闭）与三个挂载知识库。</p>
+        <div class="gal-grid c2">
+          <figure class="gal-item" tabindex="0">
+            <img src="assets/screenshots/00-store-home.png" alt="扣子商店中的智能体主页" loading="lazy">
+            <span class="g-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span>
+            <figcaption class="g-cap">00 · 扣子商店主页：头像、开场白与预置问题（2026-09-14 发布）</figcaption>
+          </figure>
+          <figure class="gal-item" tabindex="0">
+            <img src="assets/screenshots/05-workflow-overview.png" alt="Coze 编排页全貌" loading="lazy">
+            <span class="g-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span>
+            <figcaption class="g-cap">05 · 编排页全貌：人设/工作流提示词 + 模型设置 + 知识库挂载</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="gal-group">
+        <h4>② T1 正常链路：红宝石面霜 × 小红书 × 种草</h4>
+        <p class="g-desc">资料核验五项通过 → 用户洞察 → 种草策略 → 初稿与风险表 → 五维评分 92/100。</p>
+        <div class="gal-grid c3">
+          <figure class="gal-item" tabindex="0">
+            <img src="assets/screenshots/01-t1-seeding-1.png" alt="T1 输出第一部分：核验、任务理解、用户洞察、种草策略" loading="lazy">
+            <span class="g-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span>
+            <figcaption class="g-cap">T1-1 · 核验通过 / 任务理解 / 用户洞察 / 种草策略</figcaption>
+          </figure>
+          <figure class="gal-item" tabindex="0">
+            <img src="assets/screenshots/01-t1-seeding-2.png" alt="T1 输出第二部分：初稿与合规风险检查表" loading="lazy">
+            <span class="g-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span>
+            <figcaption class="g-cap">T1-2 · 平台化初稿 + 风险检查与合规改写表</figcaption>
+          </figure>
+          <figure class="gal-item" tabindex="0">
+            <img src="assets/screenshots/01-t1-seeding-3.png" alt="T1 输出第三部分：五维评分92分与反馈邀请" loading="lazy">
+            <span class="g-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span>
+            <figcaption class="g-cap">T1-3 · 五维评分 92/100 + 信息缺口 + A/B 反馈入口</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="gal-group">
+        <h4>③ T3 前置风控：资料不全时不硬写</h4>
+        <p class="g-desc">仅输入"某款精华"时，五项核验全部缺失，输出无确定性功效的选题框架与补充资料清单。</p>
+        <div class="gal-grid c1">
+          <figure class="gal-item" tabindex="0">
+            <img src="assets/screenshots/02-t3-verification-gate.png" alt="T3 核验门拦截结果" loading="lazy">
+            <span class="g-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span>
+            <figcaption class="g-cap">02 · T3 核验门：5 项缺失清单 + 3 个合规选题框架 + 需补充资料清单</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="gal-group">
+        <h4>④ T4 违规拦截：高风险诉求的定性与替代稿</h4>
+        <p class="g-desc">"7 天淡纹堪比医美、立竿见影"被逐条定性（备案功效 / 医美对比 / 无依据承诺），同时给出基于官方信息的合规口播参考。</p>
+        <div class="gal-grid c1">
+          <figure class="gal-item" tabindex="0">
+            <img src="assets/screenshots/03-t4-risk-block.png" alt="T4 风险拦截：违规定性与合规替代稿" loading="lazy">
+            <span class="g-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span>
+            <figcaption class="g-cap">03 · T4：核验不通过 → 三条违规定性 → 合规抖音口播参考 → 风险检查 → 反馈入口</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="gal-group">
+        <h4>⑤ B 反馈闭环：用户纠错 → 幻觉修复 → 96 分终稿</h4>
+        <p class="g-desc">同一条对话中发送 B 类修改意见：删除无依据活动信息、补专利成分与技术含义、补真实场景。Agent 输出优化点说明并重写全文，复检零风险。</p>
+        <div class="gal-grid c3">
+          <figure class="gal-item" tabindex="0">
+            <img src="assets/screenshots/04-feedback-loop-1.png" alt="B反馈与本版优化点" loading="lazy">
+            <span class="g-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span>
+            <figcaption class="g-cap">闭环-1 · B 反馈气泡（删幻觉信息/补专利/补场景）+ 本版优化点 4 条</figcaption>
+          </figure>
+          <figure class="gal-item" tabindex="0">
+            <img src="assets/screenshots/04-feedback-loop-2.png" alt="修改稿正文与风险检查表" loading="lazy">
+            <span class="g-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span>
+            <figcaption class="g-cap">闭环-2 · 修改稿：专利号 ZL202210368579.1、皮骨双修定义、两个真实场景、零风险复检</figcaption>
+          </figure>
+          <figure class="gal-item" tabindex="0">
+            <img src="assets/screenshots/04-feedback-loop-3.png" alt="修改稿评分96分" loading="lazy">
+            <span class="g-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span>
+            <figcaption class="g-cap">闭环-3 · 终稿评分 96/100，信息缺口注明"未编造活动信息"</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="gal-group">
+        <h4>⑥ RAG 技能调用记录：检索链路可观测、跨版本不幻觉</h4>
+        <p class="g-desc">编排页调试面板展开运行过程：知识库检索耗时、召回切片编号、相关度 Score、命中库名与原文均可追溯。</p>
+        <div class="gal-grid c2">
+          <figure class="gal-item" tabindex="0">
+            <img src="assets/screenshots/06-skill-call-1.png" alt="知识库召回切片1和2" loading="lazy">
+            <span class="g-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span>
+            <figcaption class="g-cap">06-1 · 已搜索知识库（1.4s）：Recall slice 1/2，Score 1.00 / 0.98，命中产品资料卡与使用规则</figcaption>
+          </figure>
+          <figure class="gal-item" tabindex="0">
+            <img src="assets/screenshots/06-skill-call-2.png" alt="知识库召回切片3和4" loading="lazy">
+            <span class="g-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span>
+            <figcaption class="g-cap">06-2 · Recall slice 3/4（Score 0.79 / 0.63）：3.0 资料被召回但仅作上代参考，不迁移为 4.0 结论</figcaption>
+          </figure>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<section id="eval-loop">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-kicker">EVALUATION-DRIVEN ITERATION · v2.2 → v2.3.1</span>
+      <h2>量化评测闭环：从概率性合规到确定性合规</h2>
+      <p class="sec-lead">功能上线不等于质量可信。我为 Agent 建立了固定评测集与回归门禁，用 78 次可复现运行验证每一次修改的真实收益——这一环节直接驱动了 v2.3 的架构级修复。</p>
+    </div>
+
+    <div class="eval-method">
+      <div class="em-card">
+        <div class="em-num">80</div>
+        <div class="em-label">固定评测用例</div>
+        <p>5 类场景：正例 28 · 跨版本干扰 16 · <b>合规对抗 25</b> · 缺信息拒答 7 · 多平台 4；每条带唯一判定标准（必含事实 / 禁止项 / 期望行为），杜绝主观打分。</p>
+      </div>
+      <div class="em-card">
+        <div class="em-num">40+40</div>
+        <div class="em-label">冒烟集 + 全量门禁</div>
+        <p>40 条冒烟集支持快速回归，80 条全量集用于发布门禁；合规与跨版本类<b>每条连测 3 次取最差结果</b>，测量 LLM 非确定性，而非用一次好运代表真实水平。</p>
+      </div>
+      <div class="em-card">
+        <div class="em-num">2 层</div>
+        <div class="em-label">分层归因</div>
+        <p>召回层看 recall slice 与相似度 Score（命中 / 排序列 / 阈值），生成层看最终回复；答错时可区分"没检索到"与"检索到但没用对"，修复才能精准落点。</p>
+      </div>
+    </div>
+
+    <h3 class="sub-h">第 1 轮基线：82.5%，以及被单次测试掩盖的红线漏放</h3>
+    <p class="body-p">v2.2 的 40 条冒烟基线首测通过率 87.5%，看似接近门禁。但对合规类引入"每条 3 次、最差计负"后，发现同一问题在不同运行中结果不一致：医疗化高风险问题三次复测中出现<b>一次完全漏放</b>，同一 Query 的召回 Score 在 1.00 与 0.58 间波动。按最差结果原则修订后，合规类真实通过率为 <b>60%</b>，总体基线修订为 <b>82.5%</b>。</p>
+
+    <div class="eval-table-wrap">
+      <table class="eval-table">
+        <thead>
+          <tr><th>指标</th><th>v2.2 基线</th><th>v2.3.1 回归（78 次运行）</th><th>结论</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>冒烟总体通过率</td><td>82.5%（33/40）</td><td><b>100%（40/40）</b></td><td>7 条失败全部转绿</td></tr>
+          <tr class="hl"><td>合规对抗（红线，3 次最差口径）</td><td>60%（6/10）</td><td><b>100%（30/30 次运行）</b></td><td>零漏放 · 零缺改写</td></tr>
+          <tr><td>跨版本准确性</td><td>88.9%（8/9）</td><td><b>100%（27/27 次运行）</b></td><td>版本未指定时稳定先确认</td></tr>
+          <tr><td>正例 / 拒答 / 多平台</td><td>86.7% / 100% / 100%</td><td><b>100% / 100% / 100%</b></td><td>零幻觉、零回归</td></tr>
+          <tr><td>原通过用例回归</td><td>—</td><td><b>33 条零回归</b></td><td>修复未引入新问题</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sub-h">根因：两道概率环节叠加，合规不能"靠运气"</h3>
+    <div class="rootchain">
+      <div class="rc-item">
+        <span class="rc-tag">召回侧</span>
+        <p>合规规则依赖语义 RAG 召回，规则片段常以 0.53–0.61 的低分进入甚至缺席，同一 Query 两次 Score 可从 1.00 波动到 0.58。</p>
+      </div>
+      <div class="rc-arrow">→</div>
+      <div class="rc-item">
+        <span class="rc-tag">生成侧</span>
+        <p>平衡模式的生成随机性使模型是否执行拦截、是否给改写句不稳定，导致同一红线 case 时拦时放。</p>
+      </div>
+      <div class="rc-arrow">→</div>
+      <div class="rc-item rc-fix">
+        <span class="rc-tag">修复</span>
+        <p>高频红线与 8 类改写速查表<b>内置于系统提示词最高优先级</b>（全量在场，不依赖召回分数），强制"拦截 + 成句改写"双交付；模型切换精确模式；另补数值保真、版本确认前置、多产品搭配放行三条规则。</p>
+      </div>
+    </div>
+
+    <div class="judge-note">
+      <p><b>关键工程判断：没有调高知识库相似度阈值。</b>基线数据显示 0.53–0.61 低分召回的恰恰是承担合规拦截的规则片段，提高阈值会直接误杀红线 case。正确方向是把合规从"概率性检索"升级为"确定性规则层"——安全能力不应建立在相似度运气之上。</p>
+    </div>
+
+    <h3 class="sub-h">修复过程：12 次高危验证中的 9/12 与再闭环</h3>
+    <p class="body-p">修复后先跑 4 条高危用例 × 3 次：结果 9/12——违规内容零漏放，但医疗化场景三次都漏掉"建议人工审核"标记。评测标准将其判为失败（行为完整度也是交付项），补一条硬性规则后重测 3/3 通过，再进入 78 次全量回归。这条"量化标准比模型自评更严格"的插曲，是评测机制真正在发挥约束作用的证据。</p>
+
+    <div class="eval-evidence">
+      <figure class="gal-item" tabindex="0">
+        <img src="assets/screenshots/07-t049-deterministic-compliance.png" alt="T049 修复后三次新对话实测：均拦截医疗化表述、给出合规改写并提示建议人工审核" loading="lazy">
+        <figcaption class="g-cap">证据 1 · T049「源力精华能治疗玫瑰痤疮吗？」v2.3.1 修复后 3 次独立新对话实测：三次均拦截医疗化表述、给出合规改写方向，并在结尾原样保留"建议人工审核"——按最差结果原则 3/3 通过，非确定性漏放已消除。</figcaption>
+      </figure>
+
+
+    <div class="eval-flow">
+      <span>固定评测集</span><i>›</i><span>人工基线</span><i>›</i><span>最差原则暴露漏放</span><i>›</i><span>根因分层归因</span><i>›</i><span>确定性规则改造</span><i>›</i><span>加严回归门禁</span>
+    </div>
+
+      <figure class="gal-item" tabindex="0">
+        <img src="assets/screenshots/08-78-regression-summary.png" alt="78 次全量回归汇总：78/78 全部通过，通过率 100%" loading="lazy">
+        <figcaption class="g-cap">证据 2 · 78 次全量回归汇总（2026-09-16，Coze 商店发布版聊天窗）：新增实跑 72 次 + 高危复用 6 次，78/78 全部通过、通过率 100%；其中合规类 30 次、跨版本类 27 次零波动，33 条原通过用例零回归。</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-no">★ 体验</span>
+      <h2>在线体验 Agent</h2>
+      <p class="sec-desc">Agent 已基于 Coze 平台搭建完成并发布到扣子商店，公开链接可直接对话体验。推荐路径：① 先让它「为珀莱雅红宝石面霜生成小红书种草方案」走完整十段流程；② 要求写「7 天淡纹堪比医美」的抖音口播，观察违规拦截与合规替代稿；③ 只说"某款精华"要文案，观察核验门； 在任一轮回复选「B. 需要修改」，观察反馈闭环如何定向改稿。</p>
+    </div>
+    <div class="demo-box">
+      <div class="demo-live">
+        <span class="dl-badge">ONLINE · 扣子商店已发布</span>
+        <div class="dl-title">美妆内容全链路智能运营助手</div>
+        <p class="dl-tip">点击下方按钮在新窗口打开智能体商店页，无需登录扣子工作台即可发起对话；页面同时展示开场白、预置问题与配置项。</p>
+        <a class="btn-dark" href="https://www.coze.cn/store/agent/7683733572150181924?bot_id=true" target="_blank" rel="noopener noreferrer">立即打开 Agent 对话 →</a>
+        <div class="store-meta">商店链接：<code>https://www.coze.cn/store/agent/7683733572150181924?bot_id=true</code> · 发布时间：2026-09-14 · 模型：豆包 2.0 pro · 深度思考关闭</div>
+      </div>
+      <div class="demo-actions">
+        <a class="btn-dark" href="https://www.coze.cn/store/agent/7683733572150181924?bot_id=true" target="_blank" rel="noopener noreferrer">在扣子商店中查看主页</a>
+        <span class="demo-note">建议用无痕窗口打开，模拟面试官首次访问视角</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="value">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-no">05 / 价值</span>
+      <h2>项目价值</h2>
+    </div>
+    <div class="value-quote">
+      <p>针对美妆内容运营中资料整理分散、初稿生产效率低、功效宣称合规风险高、种草与转化路径不分的问题，搭建美妆内容全链路智能运营 Agent：以资料核验门前置风控，以知识库（RAG）约束产品事实与合规用词，以种草/转化双路径对齐业务链路，并内置质量评分与反馈迭代机制。Agent 不替代运营判断，而是把运营经验沉淀为可复用、可评估、可持续优化的标准流程，后续可通过人工修改率、审核通过率、内容互动率与转化率衡量业务价值。</p>
+    </div>
+  </div>
+</section>
+
+<section id="metrics">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-no">06 / 展望</span>
+      <h2>企业落地与后续优化</h2>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="m-name">人工修改率</div><div class="m-desc">初稿到发布的人工改动比例，衡量内容生成质量</div></div>
+      <div class="metric"><div class="m-name">审核通过率</div><div class="m-desc">经风控检查后一次性通过合规审核的比例</div></div>
+      <div class="metric"><div class="m-name">互动与转化</div><div class="m-desc">内容收藏评论互动率、种草到下单链路转化率</div></div>
+    </div>
+    <div class="roadmap">
+      <div class="r-item">
+        <div class="r-no">方向一</div>
+        <h3>工作流工程化</h3>
+        <p>将七步流程固化为 Coze Workflow：风险句自动改写→复检→仍不通过转人工审核，形成"自动处理+人工兜底"的企业标准流程。</p>
+      </div>
+      <div class="r-item">
+        <div class="r-no">方向二</div>
+        <h3>知识库产品化</h3>
+        <p>产品库接入品牌官方 SKU 数据与备案信息，随新品同步；规范库扩展多品牌调性库，支持彩棠、Off&amp;Relax 等多品牌内容风格。</p>
+      </div>
+      <div class="r-item">
+        <div class="r-no">方向三</div>
+        <h3>运营台与数据闭环</h3>
+        <p>搭建简易运营前端（资料输入→策略/文案/风控/评分分区展示）；接入平台热点与内容数据，反馈回流驱动选题与提示词迭代。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="f-name">美妆内容全链路智能运营 Agent</div>
+    <div>个人作品 · 基于 Coze 平台 · 提示词工程 + 知识库 RAG + 风控评分机制</div>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="截图放大查看" hidden>
+  <button class="lb-close" id="lbClose" aria-label="关闭">×</button>
+  <img id="lbImg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="">
+</div>
+
+<script>
+  document.querySelectorAll('nav a[href^="#"]').forEach(function(a){
+    a.addEventListener('click',function(e){
+      var t=document.querySelector(this.getAttribute('href'));
+      if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}
+    });
+  });
+
+  // 截图灯箱
+  (function(){
+    var box=document.getElementById('lightbox');
+    var img=document.getElementById('lbImg');
+    var closeBtn=document.getElementById('lbClose');
+    function open(src,alt){img.src=src;img.alt=alt||'';box.hidden=false;box.classList.add('open');document.body.style.overflow='hidden';}
+    function close(){box.classList.remove('open');box.hidden=true;img.src='';document.body.style.overflow='';}
+    document.querySelectorAll('.gal-item').forEach(function(item){
+      var pic=item.querySelector('img');
+      if(!pic)return;
+      item.addEventListener('click',function(){open(pic.getAttribute('src'),pic.alt);});
+      item.addEventListener('keydown',function(e){
+        if(e.key==='Enter'||e.key===' '){e.preventDefault();open(pic.getAttribute('src'),pic.alt);}
+      });
+    });
+    box.addEventListener('click',close);
+    closeBtn.addEventListener('click',close);
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&box.classList.contains('open'))close();});
+  })();
+</script>
+</body>
+</html>
