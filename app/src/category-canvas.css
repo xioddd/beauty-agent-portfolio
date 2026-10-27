@@ -1,0 +1,8 @@
+.lane-heading{height:38px;display:flex;align-items:center;gap:8px;padding:0 10px;background:#fff;border:1px solid #e8ebef;border-radius:8px;box-shadow:0 3px 9px #202c3a08}
+.lane-heading strong{font-size:11px;font-weight:600;flex:1;white-space:nowrap}
+.lane-index{font-size:9px;color:#9ba2ab}
+.lane-total{width:18px;height:18px;display:grid;place-items:center;background:#f2f4f6;border-radius:50%;font-size:9px;color:#747d88}
+.heading-0 .lane-index{color:#d76f7f}.heading-1 .lane-index{color:#568eb9}.heading-2 .lane-index{color:#8274d7}
+.lane-date{display:none}
+.lane-cards:before{display:none}
+.asset-card.ant-card{border-radius:10px}
