@@ -30,7 +30,7 @@ jobs:
           cache-dependency-path: app/package-lock.json
       - name: Check public backend URL
         run: |
-          node -e "const u = new URL(process.env.VITE_API_BASE_URL); if (u.protocol !== 'https:') throw Error('Set repository variable VITE_API_BASE_URL to the Render HTTPS URL');"
+          node -e "const value = process.env.VITE_API_BASE_URL || ''; if (!value) throw Error('Set repository variable VITE_API_BASE_URL to the Render HTTPS URL'); const u = new URL(value); if (u.protocol !== 'https:') throw Error('Set repository variable VITE_API_BASE_URL to the Render HTTPS URL');"
       - run: npm ci
         working-directory: app
       - run: npm test
