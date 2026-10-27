@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: beauty-agent-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci --prefix app --omit=dev
+    startCommand: node app/server.mjs
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.16.0
+      - key: HOST
+        value: 0.0.0.0
+      - key: ASSET_ROOT
+        value: ../multimodal_assets
+      - key: ALLOWED_ORIGINS
+        value: https://xioddd.github.io
+      - key: COZE_BOT_ID
+        value: "7683733572150181924"
+      - key: COZE_PAT
+        sync: false
+      - key: CHAT_LIMIT_PER_HOUR
+        value: "30"
+      - key: CHAT_MAX_CONCURRENT
+        value: "2"
+

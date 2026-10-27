@@ -62,6 +62,10 @@ v2.3.1 的核心改动是把高频合规红线从「依赖 RAG 概率召回」�
 
 ## 在线体验
 
+三栏工作台入口：<https://xioddd.github.io/beauty-agent-portfolio/workbench/>。部署配置及能力边界见 [DEPLOYMENT.md](DEPLOYMENT.md)。
+
+前端由 GitHub Pages 托管，Node 后端由 Render 运行；Coze PAT 仅保存在后端环境变量。`app/` 是工作台源代码，`multimodal_assets/` 包含演示图片及来源索引，`.github/workflows/deploy-pages.yml` 负责构建与发布。
+
 作品集中包含 Coze 商店公开链接，可直接打开 Agent 对话体验。
 
 > 注：作品集中的产品资料、评测记录和截图用于展示个人项目方法与 Agent 搭建能力，重点呈现「业务理解 + 工作流设计 + 合规风控 + 评测闭环」。
