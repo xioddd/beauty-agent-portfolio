@@ -1,0 +1,61 @@
+name: Deploy portfolio and workbench
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+      VITE_BASE_PATH: /beauty-agent-portfolio/workbench/
+      ASSET_ROOT: ../multimodal_assets
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - name: Check public backend URL
+        run: |
+          node -e "const u = new URL(process.env.VITE_API_BASE_URL); if (u.protocol !== 'https:') throw Error('Set repository variable VITE_API_BASE_URL to the Render HTTPS URL');"
+      - run: npm ci
+        working-directory: app
+      - run: npm test
+        working-directory: app
+      - run: npm run build
+        working-directory: app
+      - name: Assemble Pages output
+        run: |
+          mkdir -p _site/workbench
+          cp index.html _site/index.html
+          cp -R assets _site/assets
+          cp -R app/dist/. _site/workbench/
+          touch _site/.nojekyll
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
